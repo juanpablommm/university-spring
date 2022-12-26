@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Data of the Person</title>
+</head>
+<body>
+<h1>Data of the Person</h1>
+<a th:href="@{/}">Back</a>
+<br>
+<!--con la la etiqueta th:action estamos especificando la action del formulario el path a donde ira, al igual que
+realizarlos de manera natural en la etiqueta form de html con el atributo action, ahora con la etiqueta
+th:object estamos trajendo el objeto person que compartimos desde el end-point de el firstController, atravez de
+la injection de dependencias de spring, esto con la sintaxis de ${}, la cual al igual que la sintaxis *{} evaluan
+expresiones de variables, con la diferencia que con la sintaxis de *{} evalua expresiones sobre objetos seleccionados,
+por ende es que nostros estamos trallendo el objeto person que enviasmos desde ele end-point con la sitacis ${} y a atravez
+de la etiqueta th:object, y posteriomente con la etiqueta *{} ya estamos haciendo referencia  a los atributos del objeto
+selecionado, es decir del objeto person
+basicamente con la etiqueta th:object estamos haciendo que se asocie nuestro formulario con nuestro objecto person que viene
+desde el end-point del controllador-->
+
+<!--Nosotros con ayuda de las etiquetas th:object con el suasdo de la sintaxis ${} y asociar nuestro objecto person
+que viene desde el controlador mas el uso de las etiquetas th:field con las intaxis *{} dentro de las etiquetas input
+de nuestro formulario, estaremos podiendo modificar  el valor de los atributos del objecto person y devolviendo
+este bjecto ya armado con los valores que le demos desde el cliente a nuestro end-point de donde lo vamos
+a enviar segun hallamos definido den el action del formulario-->
+
+<!--este template nos sirve tanto para insertar un nuevo registro en la base de datos como tambien para relizar un
+update de un regisrtro, porque al momento de que se redirecione a esta template desde el end-point /add como tramos
+un objeto person con los atributos totalemnte nulos, estaremos aeditando estos atributos de este objeto y enviadolo
+ya con sus respectivos valores dependiento de la informacion que estemos registrando, como por el otro lado si
+venimos desde el end-point de update /update/{id} estaremos trayendo un objeto person con todos sua tributos con
+valores dado que este ha sido traido desde la base de datos, y estaremos cargando en los input estos valores de
+estos atributos y deitandolos para enviar nuevamente el objecto person que revicimos con los valores que hallamos modificado,
+llegandole este objeto al end-point de /save el cual con ayuda de jspa y su implmentacion de hibernate al notar que viene un id que ya existe
+en un registro de la base de datos realizara un update y no un inser nuevo, por ende para que esto funcione de esta manera debemos
+tener un iput para el id, oculto ya que este no se hira a modificar, pero si para que enviemos el objeto asociado al formulario
+con ese campo, dado que sino lo hacemos asi, el end-point de /save estara recibiendo el objeto person con todos sus atributos
+que hemos actulizado pero menos el id, este estara llegando null, por lo que la magia de jpa y hibernate, mencionada antes no funcionara
+y solo nos realizara un nuevo insert con un id diferente-->
+<form th:action="@{/save}" method="post" th:object="${person}">
+
+    <input type="hidden" th:field="*{id}">
+
+    <!--con la etiqueta th:field tiene una característica muy importante para la integración de Spring MVC porque hace
+    el trabajo pesado de vincular su entrada con una propiedad en el bean de respaldo de formulario,
+    pero esta se comporta de manera distinta dependienndo de si esta asociada a una etiqueta o input,
+    por ejemplo al colocar dentro de una etiqueta input de html, lo que ahra es darle al atribut id de discha
+    eqituqeta input el nombre de su equivalente al atributo de nuestra clase  bean, y tambian le estara dando al atributo
+    value de la etiqueta input de html el valor de el atributo que estamos llamando.
+    como nota importante esta equita se usa con la sintaxis *{} dado ques estaremos haciendo referencia a los objectos
+    bean que slecionemos.
+    Esta etiqueta tambien hara otro par de cosas importantes como saber fdarle formato a valores de fechas y demas...-->
+    <label th:for="*{name}">Name:</label>
+    <input  type="text" name="name"  th:field="*{name}">
+    <br>
+
+    <!--con la etiqueta th:form y la expresion *{} en la etiqueta label de html estaremos asociando para nuestro atributo
+    por ejemplo lastName de nuestro calse de dominio, o bean que estemos manejando la sociacion de decir que este label
+    pertenece a el input con el mismo id, dando les el valor a estos del nombre de al atributo del bean-->
+    <label th:for="*{lastName}">LastName:</label>
+    <input  type="text" name="lasName"  th:field="*{lastName}">
+    <br>
+
+    <label th:for="*{phoneNumber}">PhoneNumber:</label>
+    <input  type="tel" name="phoneNumber"  th:field="*{phoneNumber}">
+    <br>
+
+    <label th:for="*{email}">Email:</label>
+    <input  type="email" name="email"  th:field="*{email}">
+    <br>
+
+    <input type="submit" name="save" value="Save"/>
+</form>
+
+</body>
+</html>

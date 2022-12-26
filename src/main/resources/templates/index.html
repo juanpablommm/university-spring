@@ -6,6 +6,12 @@
 </head>
 <body>
 <h1>Welcome to the project of course </h1>
+<!--para la agregacion de un link, utilizando la tecnologia de thymelaft,
+dentro de nuestra etiqueta a de html, agregamos la etiqueta th:href y dentro de las commillas
+dado que es un link, nos apoyaremos de el @  y las {} algo similar a cuando
+utilizamos el signo de $ y las mismas {} para agregar codigo java y logica dentro de nuestra
+plantilla, finalamnete agregamos el path a donde queremos redirecionar-->
+<a th:href="@{/add}">Add Person</a>
 
 <div th:if="${people != null && !people.isEmpty()}">
 <!--con la etiqueta th:if de thymeleaf podemos validar una condicional, para aplicar en base a si se cumple o no
@@ -19,6 +25,8 @@ y podemos aplicar codigo java dentro de esta sintaxis, como en este caso compara
             <th>LastName</th>
             <th>Phone number</th>
             <th>Email</th>
+            <th>Update</th>
+            <th>Delete</th>
         </tr>
         <tr th:each="person : ${people}">
             <!--para realizar la iteracion sobre una collection que enviemos desde nuestro controllador,
@@ -33,6 +41,13 @@ y podemos aplicar codigo java dentro de esta sintaxis, como en este caso compara
             <td th:text="${person.getLastName()}"></td>
             <td th:text="${person.getPhoneNumber()}"></td>
             <td th:text="${person.getEmail()}"></td>
+            <!--relizamos un link para que se nos envie hacia el end-point de update, endonde el path que estamos
+            enviando lleva el id del objeto persona que estemos recorriendo por cada iteracion del bucle, esto atravez
+            de "path param" por ende ponemos al final del path del end-point un / para enviar el id en el mismo path
+            atravez de  path param quedando algo similar ah localhost:8080/update/1
+
+            si fuese por query param seria locahost:8080/update?id=1-->
+            <th><a th:href="@{/update/} + ${person.getId()}" th:text="Update"/></th>
             <td></td>
         </tr>
     </table>

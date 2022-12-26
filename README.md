@@ -1,39 +1,23 @@
 ### Curso de Spring
 
-**clase-7 manejo transacional, y creacion de la capa service**
+**clase-8 CRUD**
 
-* Para la implementacion de la cpa de servicio debemos crear una nueva interface, mas su implmentacion,
-en la interface definimos los contractos, los metodos que vamos a crear a nivel de negocio, de servicio.
-* En la implementacion deberemos anotarla con la anotacion @Service para indicar a Spring que reconozca esta clase como 
-una clase de servicio, sino no hacemos eso depues no podremos injectar esta clase como una implmentacion de la interface
-dentro del controlador. Spring la reconocera como parte del contenedor de Spring y la podramos inyectar en nuestro 
-controlador.
-En esta implmentacion, tendremos que inyectar nuestro DAO, o repositori con el que vamos a trabajar para la implmentacion
-de nuestro metodos definidos en la interface servicies.
+Modificamos para la creacion ya de un CRUD completo, el create, read, update, delete,
+de la clase domain "Person", atravez de la injection de dependencias de spring, en un end-point,
+enviamos un objeto Person hacia el template en donde con ayuda de las etiquetas **th:object** asociamos ese objecto
+a un formulario html, en donde tambien atravez de las etiquetas **th:field** en los input que tenemos para el
+formulario podemos asociar los atributos de nuestro objeto Person al id de la etiqueta input y el valor que tenga
+estos atributos a los valores del input, precargadno la informacion en esto, y podiendo al momento de ingresar su respectivo
+valor cambiarlo al del atributo del objeto Person, y enviar este objeto ya armado hacia otro end-point para persistirlo en la 
+base de datos.
 
-**debido a que estamos dentro de la cpa de servicio debemos agregar un tema mas...**
-Cuando estamos dentro de la capa DAO se maneja el concepto de tranccasiones, esto quiere decir que cualquier operacon con
-la base de datos, en dado caso de errror se va hacer un rollback, o  en dado caso de que todo este bien se realice
-un commit, **pero cuando estamos trabajando con nuestras clases de servicio, podriamos estar utlizando varios obejectos 
-de tipo DAO, desde una misma clase de servicio, por lo tanto podriamos estar utlizando varias operaciones, sobre distintas
-tablas sobre la base de datos, por lo tanto tambien nuestros metodos en al capa de servicio debemos de marcarlos 
-como trnzacionales, ya que en dado caso de errror debe de hacer un rollback, y no guardar la informacion en ninguna de 
-las tablas afectadas, y en dado caso de que todo sea exito, debera de hacer un commit de toda la tranzacion, guardando 
-toda la infromacion en todas la tablas afectadas.., ese concepto de tranzacional lo aplicamos dentro de nuestra 
-implementacionde de la interface**
-* Dependiendo del tipo de metodo es el dipo de trnsacion que vamos a utlizar, si nuestro metodo solo va leer informacion
-podemos mecionar esto en la anotacon ```java @Transactional(readOnly = true)```
-* En el caso de de guardar, eliminar o actulizar por ejemplo, si debemos colocar que sera transaccional sin ningun otro parametro
-```java @Transactional``` ya que en este caso si se va a modificar la informacion en la base de datos por lo tanto
-* si debera de hacer commit o rollback
-
-**Nota:** Cuando trabajamos con la anotacion Transactional debemo de tener cuidado de inportar la correcta, esta debe de
-pertenecer al paquete de spring
-
-
-![image](https://user-images.githubusercontent.com/62717509/208219352-b6efbca7-012b-4a21-8280-e4f0aa786fcb.png)
-Con esto ya tenemos todas nuestras cpas logicas, ya tenmos nuestra cap de datos incluyendo nuestra clase DAO,
-nuestra inferca DAO y nuestra clase de monio, ya que estas son la encargadas de comunicarse con la base de datos.
-Po otro lado ya tenemos nuestra cpa de negocion, implemntada con nuestros services,
-y finalmente tenemo nnuestra capa de presentacion donde tenemos nuestro controlador de spring, y estmoas impmlentando
-la presentacion utlizando la tecnoglocia de thymleaft
+**con esta logica ya establecida, podemos reutilizar la template tanto para realizar un insert de un registro nuevo o para relizar un update de
+un registro ya existente**, esto dado que cuando estamos dirigiendonos a esta template desde el end-point que envia el objeto person
+con todos sus atributos nulos pues taremos modificandolos atributos de este, y enviadolos al repectivo end-point para que con ayuda
+del service realiza un insert en la base de datos, y por otro lado al momento de que vengamos desde el end-point que envia un obejeto 
+person con todos su datos completos, dado que lo consulto en la base de datos con su respectivo id, pues  estaremos modificando este
+en la template y lo estaremos enviado con el mimo id con el que llego a la template, y eniadolo hacia el end-point que realiza el
+insert en la base de datos, pero con ayuda de **JPA y la implmentacion de hibernate sera inteligente para saber que ese id esta 
+ya en un registro de la base datos por lo que no relizara un insert sino que hara un update actulizando haci el registro con
+la informacion que editamos desde la base de datos, esto porque por debajo se estara haciendo un select antes de realizar el inser
+defindo en el metodo el repository para saber si ahy un registro ya la base de datos con ese id, de ser asi realizara un update**
